@@ -1,0 +1,16 @@
+@import './common/reset.scss';
+
+html, body {
+  height: 100%;
+  font-family:"微软雅黑","黑体","宋体";
+  &::-webkit-scrollbar {
+    display: none;
+}
+}
+
+#app{
+  display: flex;
+  flex-direction: column;
+  height: 99.94%;
+}
+
