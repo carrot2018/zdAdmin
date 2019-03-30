@@ -144,7 +144,9 @@ export default {
 
     // 修改新闻
     updateNews(id) {
+      
       let ids = id;
+      console.log(ids)
       axios.get('/api/invoker/content/selectContentById/', {params:{"id": ids}}
       ).then((response) => {
         this.updata = response.data.data;
@@ -153,7 +155,7 @@ export default {
          console.log(id)
         this.$router.push({
          name: 'newsadd',
-          params: {
+          query: {
             newsId: id
           }
         })

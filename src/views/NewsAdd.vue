@@ -158,7 +158,7 @@ export default {
       content:"",
       submitBtn: true,
       submitBtn1: false,
-      // data1: { name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }
+      // ckcontent:''
     }
   },
   methods: {
@@ -204,19 +204,6 @@ export default {
       // this.time = myDate.toLocaleString();
     },
 
-    // 对新闻新增的时间进行转换
-    // parseTime() {
-      
-    //   let data = this.updata.timeStamp;
-    //   let Y = date.getFullYear() + '-';
-    //   let M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
-    //   let D = date.getDate() + ' ';
-    //   let h = date.getHours() + ':';
-    //   let m = date.getMinutes() + ':';
-    //   let s = date.getSeconds();
-    //   this.timeStamp=Y+M+D+h+m+s;
-    //   // console.log(time)
-    // },
 
     // 退到新闻管理
     goNews() {
@@ -295,28 +282,38 @@ export default {
 
     // 获取新闻数据
     getNews() {
-      let ids = this.$route.params.newsId;
+      let ids = this.$route.query.newsId;
       axios.get('/api/invoker/content/selectContentById/', {params:{"id": ids}}
       ).then((response) => {
         this.updata = response.data.data;
-        let upData = this.updata;
+        let upData = response.data.data;
        
+        this.editor.setData(upData.content)
+        // let ckcontent = this.updata.content
+        // this.editor.setData(ckcontent, 
+        // // {
+        // //   // callback: function() {
+        // //   //   return false // true
+        // //   // }
+        // //   }
+        //   )
+        // this.ckcontent = upData.content
         console.log(this.updata)
-        this.editor.setData(this.updata.content)
+       
         this.title = upData.title;
         // this.timeStamp = this.parseTime()
         // this.parseTime();
         this.newsfrom = upData.source;
         this.fileList = [{name: 'xx.jpg', url: upData.imgSrc}];
         this.fileName = upData.imgSrc;
-        console.log(this.fileName)
+        // console.log(this.fileName)
         this.radio = String(upData.display) ;
+        
         if(upData.stick === 0) {
           this.checked1 = true
         } else {
           this.checked1 = false
         }
-        
       })
     },
 
@@ -330,7 +327,7 @@ export default {
       }
       // console.log(stick)
       this.content = this.editor.getData()
-      let thisId = this.$route.params.newsId
+      let thisId = this.$route.query.newsId
       let title = this.title;
       let timeStamp = this.timeStamp;
       let optionsVal0 = this.optionsVal0;
@@ -372,7 +369,7 @@ export default {
   mounted() {
     
     // 通过路由传递的参数判断当前是修改还是新增
-    if(this.$route.params.newsId !== undefined) {
+    if(this.$route.query.newsId !== undefined) {
       this.getNews();
       this.submitBtn = false;
       this.submitBtn1 = true;
@@ -380,15 +377,13 @@ export default {
       this.submitBtn = true;
       this.submitBtn1 = false;
     }
-    console.log(this.$route.params.newsId)
     // 获取系统时间
     this.getTime();
-
+  
     // this.parseTime();
     // editor 
     CKEDITOR.replace('editor', {height: '300px', width: '100%', toolbar: 'toolbar_Full'});
     this.editor = CKEDITOR.instances.editor;
-   
   }
 }
 </script>

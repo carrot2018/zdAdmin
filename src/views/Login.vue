@@ -57,6 +57,7 @@
         class="item"
       >
       <el-input 
+        @keyup.enter.native="userLogin()"
         v-model="loginForm.pwd" 
         autocomplete="off"
         class="login-box__input" 
