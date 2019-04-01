@@ -85,6 +85,7 @@ import Cookie from 'js-cookie'
 import axios from 'axios';
 export default {
   data() {
+    // element-ui 提示语相关函数
     var validateuser = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入登陆账号'));
@@ -141,7 +142,7 @@ export default {
         if(result.data !== null) {
           if (data.userName === result.data.userName) {
             if (data.password === result.data.password) {
-              Cookie.set('userName', result.data.userName, { expires: this._expires/24 });
+              Cookie.set('userName', result.data.userName, { expires: 9/24 });
               this.open1()
               this.$router.push('newsadmin');
             } else {
@@ -189,6 +190,8 @@ export default {
 .login {
   flex: 1;
   background-image: url(../assets/bg.jpg);
+  background-repeat: no-repeat;
+  background-size: 100%;
   display: flex;
   justify-content: center;
   align-items: center;

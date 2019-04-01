@@ -266,8 +266,9 @@ export default {
   },
   created() {
     this.getNews()
-  },
+  }
 }
+
 </script>
 
 <style lang="scss" scoped>
