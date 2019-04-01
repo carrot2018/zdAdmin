@@ -21,7 +21,7 @@
             <i class="icon_modify icon"></i>
             <span class="more_text">修改密码</span>
           </div>
-          <div class="logout">
+          <div class="logout" @click="loginOut">
             <i class="icon_logout icon"></i>
             <span class="more_text">退出登录</span>
           </div>
@@ -99,8 +99,27 @@ export default {
     getUserName() {
       let name = Cookie.get('userName');
       this.userName = name;
-    }
+    },
    
+    loginOut() {
+      this.$confirm('确定退出登录吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        Cookie.remove('userName');
+        this.$message({
+          type: 'success',
+          message: '您已退出登录!'
+        });
+        this.$router.replace('/login')
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        });          
+      });
+    }
   },
   created() {
     this.getUserName();
