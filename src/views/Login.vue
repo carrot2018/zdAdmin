@@ -191,7 +191,7 @@ export default {
   flex: 1;
   background-image: url(../assets/bg.jpg);
   background-repeat: no-repeat;
-  background-size: 100%;
+  background-size: cover;
   display: flex;
   justify-content: center;
   align-items: center;

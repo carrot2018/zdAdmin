@@ -9,7 +9,7 @@ CKEDITOR.editorConfig = function( config ) {
 	// config.uiColor = '#AADC6E';
   config.width = 1070;
   config.height = 600;
-  config.filebrowserUploadUrl = 'http://23e74b3832.wicp.vip/press-invoker/ek/file/upload';
+  config.filebrowserUploadUrl = 'http://192.168.1.128:8081/press-invoker/ek/file/upload';
   config.image_prefillDimensions = false;
   config.extraPlugins='html5video,html5audio,lineheight,media,richcombo';
     //自定义工具栏

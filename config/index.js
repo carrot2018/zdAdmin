@@ -12,8 +12,8 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api': {
-        //  target: 'http://192.168.1.128:8081/press-invoker', // 测试环境地址
-         target: 'http://23e74b3832.wicp.vip/press-invoker',
+         target: 'http://192.168.1.128:8081/press-invoker', // 测试环境地址
+        //  target: 'http://23e74b3832.wicp.vip/press-invoker',
          changeOrigin: true,
          pathRewrite: {
            '^/api': ''

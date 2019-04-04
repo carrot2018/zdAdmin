@@ -14,7 +14,7 @@
         <li>
           <div class="label">新闻标题</div>
           <div class="content-input__list__right">
-            <el-input class="title" v-model="title" type="string" placeholder="  一句话描述新闻标题"></el-input>
+            <el-input class="title" maxlength=64 v-model="title" type="string" placeholder="  一句话描述新闻标题"></el-input>
           </div>
         </li>
         <li>
@@ -67,6 +67,8 @@
               list-type="picture"
               :on-success="onSuccess"
               :on-exceed="handleExceed"
+              :on-remove="handleRemove"
+              :on-error="uploadError"
               :before-upload="beforeAvatarUpload"
               :limit= 1
               >
@@ -74,9 +76,9 @@
               <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
               <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2M</div>
             </el-upload>
-            <input type="text">
+            <!-- <input type="text"> -->
             
-            <!-- <form method="post" enctype="multipart/form-data"  action="http://23e74b3832.wicp.vip/press-invoker/invoker/content/file/upload/" target="">
+            <!-- <form method="post" enctype="multipart/form-data"  action="http://192.168.1.128:8081/press-invoker/file/upload" target="">
               上传文件: <input type="file" name="file"><br/>
               <br/>
               传输： <input type="submit" value="Press"> 
@@ -150,30 +152,43 @@ export default {
       }],
       optionsVal1: '', // 子分类绑定的value值
       imgUrl: 'http://192.168.1.128:8081/press-invoker/file/upload', // 图片上传的地址
-      fileList: [],
+      fileList: [], // 文件信息
       fileName: '', // 图片上传成功后返回的地址
       radio: '0', // 是否显示
       checked1: false, // 是否置顶
       isdisabled: false,
-      content:"",
-      submitBtn: true,
-      submitBtn1: false,
+      content:"", // 富文本编辑器的内容
+      submitBtn: true,  // 提交按钮（新增和修改写一页里面了）
+      submitBtn1: false,  // 修改按钮
+      // ckcontents:''
       // ckcontent:''
     }
   },
   methods: {
 
-    submitUpload() {
+    // 点击上传到服务器
+    submitUpload(fileList) {
       this.$refs.upload.submit();
-      console.log(this.fileList)
+      // console.log(fileList)
     },
 
     // 文件上传成功的钩子函数
     onSuccess(file, fileList) {
-      // console.log(file, fileList);
+      // console.log(file,fileList,fileList);
       this.fileName = file.data;
     },
+
+    // 删除文件时的钩子
+    handleRemove(file, fileList) {
+      // console.log(file, fileList);
+      this.fileName = ''
+    },
     
+    // 上传图片失败时的钩子
+    uploadError() {
+      this.$message.error('上传失败！上传文件时发生网络错误！')
+    },
+
     // 限制图片格式和大小
     beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg';
@@ -200,7 +215,7 @@ export default {
         let m = date.getMinutes() + ':';
         let s = date.getSeconds();
         this.timeStamp=Y+M+D+h+m+s;
-        console.log(this.timeStamp, this.timeStamp)
+        // console.log(this.timeStamp, this.timeStamp)
       // this.time = myDate.toLocaleString();
     },
 
@@ -231,10 +246,11 @@ export default {
       } else {
         stick = 0
       }
-      // console.log(stick)
+      // 重新获取系统时间
+      this.getTime();
+
       this.content = this.editor.getData()
-      // console.log(this.editor.getData(), Cookie.get('userName'))
-      // let formData = new FormData()
+
       let title = this.title;
       let timeStamp = this.timeStamp;
       let optionsVal0 = this.optionsVal0;
@@ -275,7 +291,8 @@ export default {
           
         })
       } else {
-        this.$message.error('新增失败，请检查是否填写完整');  
+        title === ''?this.$message.error('请输入新闻标题'):(optionsVal0 === ''||optionsVal1 === '')?this.$message.error('请选择新闻类型'):newsfrom === ''?
+        this.$message.error('请输入新闻来源'):fileName===''?this.$message.error('请上传一张新闻封面图片'):content === ''?this.$message.error('请输入新闻内容哦'):this.$message.error('新增失败，请检查是否填写完整');  
       }
 
     },
@@ -285,21 +302,25 @@ export default {
       let ids = this.$route.query.newsId;
       axios.get('/api/invoker/content/selectContentById/', {params:{"id": ids}}
       ).then((response) => {
-        this.updata = response.data.data;
+        // this.updata = response.data.data;
         let upData = response.data.data;
-       
-        this.editor.setData(upData.content)
-        // let ckcontent = this.updata.content
-        // this.editor.setData(ckcontent, 
-        // // {
-        // //   // callback: function() {
-        // //   //   return false // true
-        // //   // }
-        // //   }
-        //   )
-        // this.ckcontent = upData.content
-        console.log(this.updata)
-       
+        let ckcontents = upData.content;
+                 
+        var ed = this.editor
+        // ckedtior有四个状态 unloaded, loaded, ready, destroyed 到ready的时候setData方法才有效
+        var waitCKEditorReady = function(data) {
+          if(ed.status == 'ready') {
+            ed.setData(data);
+          } else {
+            setTimeout(function() {
+              waitCKEditorReady(data);
+            }, 20);
+          }
+         }
+        setTimeout(function() {
+          waitCKEditorReady(ckcontents);
+        }, 50);
+
         this.title = upData.title;
         // this.timeStamp = this.parseTime()
         // this.parseTime();
@@ -325,7 +346,7 @@ export default {
       } else {
         stick = 0
       }
-      // console.log(stick)
+      
       this.content = this.editor.getData()
       let thisId = this.$route.query.newsId
       let title = this.title;
@@ -352,14 +373,20 @@ export default {
           "topLine": optionsVal1
         }
       }
+      
       console.log(data)
      
-
-       axios.post('/api/invoker/content/update/', data
-      ).then((response) => {
-        console.log('修改成功')
-        this.$router.go(-1)
-      })
+      if(content !== '' && title !== '' && newsfrom !== '' && fileName !== ''){
+         axios.post('/api/invoker/content/update/', data
+        ).then((response) => {
+          this.$message.success('修改成功');
+          this.$router.go(-1)
+        })
+      } else {
+         title === ''?this.$message.error('请输入新闻标题'):(optionsVal0 === ''||optionsVal1 === '')?this.$message.error('请选择新闻类型'):newsfrom === ''?
+        this.$message.error('请输入新闻来源'):fileName===''?this.$message.error('请上传一张新闻图片哦'):content === ''?this.$message.error('请输入新闻内容哦'):this.$message.error('新增失败，请检查是否填写完整');  
+      }
+      
     }
   },
 
@@ -367,7 +394,7 @@ export default {
    
   },
   mounted() {
-    
+  
     // 通过路由传递的参数判断当前是修改还是新增
     if(this.$route.query.newsId !== undefined) {
       this.getNews();
@@ -377,18 +404,29 @@ export default {
       this.submitBtn = true;
       this.submitBtn1 = false;
     }
+
     // 获取系统时间
     this.getTime();
   
-    // this.parseTime();
     // editor 
     CKEDITOR.replace('editor', {height: '300px', width: '100%', toolbar: 'toolbar_Full'});
     this.editor = CKEDITOR.instances.editor;
-  }
+  },
+
+  watch: {
+    title:function(val) {
+      if(this.title.length===64) {
+        this.$message.error('新闻标题长度为1~64位!当前无法输入更多了')
+      }
+    }
+  },
 }
 </script>
 
 <style lang="scss" scoped>
+.el-upload__tip {
+  height: 15px;
+}
 .upload-demo {
   width: 100%;
 }

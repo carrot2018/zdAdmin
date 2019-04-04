@@ -16,6 +16,7 @@
         :cell-style= 'this.center'
         style="width: 100%">
         <el-table-column
+          label="ID"
           type = "index"  
         >
         </el-table-column>
@@ -127,9 +128,11 @@ export default {
       let data = {"currentPage":currentPage, "pageSize":pageSize};
       axios.post('/api/invoker/gossip/selectListOfJobs/', data
       ).then((response) => {
-        let result = response.data;
-         let pageResult = result.data.pageResult;
-        if(result.data !== null) {
+        console.log(response)
+          let result = response.data;
+         
+          if(result.data !== null) {
+             let pageResult = result.data.pageResult;
           this.currentPage = pageResult.currentPage;
           this.total = pageResult.totalRows;
           this.pageSize = pageResult.pageSize;
@@ -149,6 +152,7 @@ export default {
             return Y+M+D+h+m+s;
           }
 
+          // 返回的数据里面的 处理状态 （0,1）转换成中文
           messages.some((item, i) => {
             if (item.processStatus === 0) {
               item.processStatus = '已处理'

@@ -21,6 +21,7 @@
         :cell-style= 'this.center'
         style="width: 100%">
         <el-table-column
+          label="ID"
           type = "index"  
         >
         </el-table-column>
@@ -198,9 +199,10 @@ export default {
       ).then((response) => {
         let result = response.data;
         //  console.log(result)
-        let pageResult = result.data.pageResult;
+        
        
         if(result.data !== null) {
+          let pageResult = result.data.pageResult;
           this.currentPage = pageResult.currentPage;
           this.total = pageResult.totalRows;
           this.pageSize = pageResult.pageSize;

@@ -20,6 +20,7 @@
         :cell-style= 'this.center'
         style="width: 100%">
         <el-table-column
+          label="ID"
           type = "index"  
         >
         </el-table-column>
