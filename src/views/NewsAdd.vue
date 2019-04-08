@@ -160,8 +160,6 @@ export default {
       content:"", // 富文本编辑器的内容
       submitBtn: true,  // 提交按钮（新增和修改写一页里面了）
       submitBtn1: false,  // 修改按钮
-      // ckcontents:''
-      // ckcontent:''
     }
   },
   methods: {
@@ -294,7 +292,7 @@ export default {
         title === ''?this.$message.error('请输入新闻标题'):(optionsVal0 === ''||optionsVal1 === '')?this.$message.error('请选择新闻类型'):newsfrom === ''?
         this.$message.error('请输入新闻来源'):fileName===''?this.$message.error('请上传一张新闻封面图片'):content === ''?this.$message.error('请输入新闻内容哦'):this.$message.error('新增失败，请检查是否填写完整');  
       }
-
+      
     },
 
     // 获取新闻数据
@@ -387,11 +385,12 @@ export default {
         this.$message.error('请输入新闻来源'):fileName===''?this.$message.error('请上传一张新闻图片哦'):content === ''?this.$message.error('请输入新闻内容哦'):this.$message.error('新增失败，请检查是否填写完整');  
       }
       
-    }
+    },
+
   },
 
   computed: {
-   
+    
   },
   mounted() {
   
@@ -418,7 +417,8 @@ export default {
       if(this.title.length===64) {
         this.$message.error('新闻标题长度为1~64位!当前无法输入更多了')
       }
-    }
+    },
+    
   },
 }
 </script>

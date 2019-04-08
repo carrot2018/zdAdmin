@@ -47,7 +47,7 @@
         </div>
         <div class="pwd-box__btns">
          <el-button class="pwd-box__btn" type="info" @click="goBack">取消</el-button>
-         <el-button class="pwd-box__btn" type="success">确认</el-button>
+         <el-button class="pwd-box__btn" type="success" @click="confirm">确认</el-button>
         </div>
       </div>
   </div>
@@ -57,6 +57,10 @@
 <script>
 import Cookie from 'js-cookie';
 export default {
+
+  props:{
+    isShow1: Boolean
+  },
   data () {
     return {
       userName: '',
@@ -88,6 +92,22 @@ export default {
         this.changePwd = false
       }
     },
+
+    // 确认修改密码
+    // confirm() {
+      
+    //   let userPwd = this.userPwd;
+    //   let pwd = this.pwd;
+    //   let pwdAgain = this.pwdAgain;
+    //   if(Cookie.get('userName')!==this.userName) {
+    //     this.$message.error('用户名错误')
+    //   } else {
+    //     if(pwd!==pwdAgain){
+
+    //     }
+    //   }
+    //   let data = {}
+    // },
 
     // 点击取消修改密码
     goBack() {
@@ -122,7 +142,15 @@ export default {
     }
   },
   created() {
+    
     this.getUserName();
+  },
+
+  watch: {
+   
+    isShow1:function (newVal, oldVal) { 
+      this.isShow = false
+    }
   },
 }
 </script>
